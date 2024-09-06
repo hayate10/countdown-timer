@@ -4,24 +4,90 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>カウントダウンタイマー</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding-top: 50px;
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+
+        button {
+            font-size: 1rem;
+            padding: 10px 20px;
+            margin: 10px;
+            border: none;
+            background-color: #4CAF50;
+            color: white;
+            border-radius: 5px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
 </head>
 <body>
     <h1>カウントダウン: <span id="timer">60</span>秒</h1>
+    <button onclick="startTimer()">スタート</button>
+    <button onclick="stopTimer()">ストップ</button>
+    <button onclick="resetTimer()">リセット</button>
+
     <script>
-        let countdown = 60;  // カウントダウンの秒数
+        let countdown = 60;
+        let timerElement = document.getElementById("timer");
+        let intervalId;
 
-        const timerElement = document.getElementById("timer");
+        function startTimer() {
+            if (!intervalId) {
+                intervalId = setInterval(() => {
+                    countdown--;
+                    timerElement.textContent = countdown;
 
-        // 1秒ごとにカウントダウン
-        const intervalId = setInterval(() => {
-            countdown--;
-            timerElement.textContent = countdown;
-
-            if (countdown <= 0) {
-                clearInterval(intervalId);  // タイマーを停止
-                alert("カウントダウン終了！");
+                    if (countdown <= 0) {
+                        clearInterval(intervalId);
+                        alert("カウントダウン終了！");
+                        sendCompletionToMyGPT();  // カウントダウン終了後にMyGPTへリクエスト送信
+                    }
+                }, 1000);
             }
-        }, 1000);  // 1000ミリ秒ごとに実行
+        }
+
+        function stopTimer() {
+            clearInterval(intervalId);
+            intervalId = null;
+        }
+
+        function resetTimer() {
+            stopTimer();
+            countdown = 60;
+            timerElement.textContent = countdown;
+        }
+
+        // カウントダウン終了時にMyGPTに「テスト終了です」というメッセージを送信
+        function sendCompletionToMyGPT() {
+            fetch('https://api.openai.com/v1/completions', {
+                method: 'POST',
+                headers: {
+                    'Authorization': 'Bearer API_KEY',  // APIキーを設定
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    model: 'text-davinci-003',  // モデル指定
+                    prompt: 'テスト終了です。',  // プロンプトにURLを含める
+                    max_tokens: 50
+                })
+            })
+            .then(response => response.json())
+            .then(data => console.log("MyGPTからの応答:", data))
+            .catch((error) => {
+                console.error("エラーが発生しました:", error);
+            });
+        }
     </script>
 </body>
 </html>
