@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>カウントダウンタイマー</title>
+</head>
+<body>
+    <h1>カウントダウン: <span id="timer">60</span>秒</h1>
+    <script>
+        let countdown = 60;  // カウントダウンの秒数
+
+        const timerElement = document.getElementById("timer");
+
+        // 1秒ごとにカウントダウン
+        const intervalId = setInterval(() => {
+            countdown--;
+            timerElement.textContent = countdown;
+
+            if (countdown <= 0) {
+                clearInterval(intervalId);  // タイマーを停止
+                alert("カウントダウン終了！");
+            }
+        }, 1000);  // 1000ミリ秒ごとに実行
+    </script>
+</body>
+</html>
