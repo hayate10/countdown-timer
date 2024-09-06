@@ -73,7 +73,7 @@
             fetch('https://api.openai.com/v1/completions', {
                 method: 'POST',
                 headers: {
-                    'Authorization': 'Bearer sk-proj-gb4XDePdSAqnaiauMlmTT3BlbkFJq0kCjM7qCqkNTBw1lujC',  // APIキーを設定
+                    'Authorization': 'Bearer $OPENAI_API_KEY',  // APIキーを設定
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
